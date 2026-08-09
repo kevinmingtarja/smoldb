@@ -1,3 +1,4 @@
+import os
 from types import TracebackType
 from typing import Self
 from collections.abc import Iterator
@@ -89,6 +90,6 @@ class Lmdb:
 
 
 
-def open(path: str) -> Lmdb:
-    env = lmdb_lib.open(path)
+def open(path: str | bytes | os.PathLike[str]) -> Lmdb:
+    env = lmdb_lib.open(str(path))
     return Lmdb(env)
