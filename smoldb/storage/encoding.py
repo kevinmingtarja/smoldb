@@ -46,10 +46,10 @@ class Value:
         if tag not in (b"0", b"1", b"2", b"3"):
             raise ValueError(f"unknown Value tag: {tag!r}")
         if tag == b'0':
-            return Value(None)
+            return cls(None)
         if tag == b'1':
-            return Value(data[1:2] == b'1')
+            return cls(data[1:2] == b'1')
         if tag == b'2':
-            return Value(data[1:])
+            return cls(data[1:])
         if tag == b'3':
-            return Value(I64.unpack_from(data, 1)[0])
+            return cls(I64.unpack_from(data, 1)[0])
