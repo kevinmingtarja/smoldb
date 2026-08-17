@@ -53,3 +53,25 @@ class Value:
             return cls(data[1:])
         if tag == b"3":
             return cls(I64.unpack_from(data, 1)[0])
+
+
+def write_frame(buf: bytearray, payload: bytes) -> None:
+    length = len(payload)
+    buf.extend(U64.pack(length))
+    buf.extend(payload)
+
+
+def read_frame(data: bytes, offset: int) -> tuple[bytes, int]:
+    """Read [u64 length][payload] and return (payload, next offset)."""
+    header_end = offset + U64.size
+    if header_end > len(data):
+        raise ValueError("truncated frame header")
+
+    length = U64.unpack_from(data, offset)[0]
+    payload_end = header_end + length
+
+    if payload_end > len(data):
+        raise ValueError("truncated frame payload")
+
+    payload = data[header_end:payload_end]
+    return (payload, payload_end)
